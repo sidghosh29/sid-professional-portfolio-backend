@@ -9,6 +9,9 @@ const afterRequestHandler = require("./middleware/afterRequestHandler.js");
 // Create an Express application
 const app = express();
 
+// MUST be here (before cors, rateLimit, routes, everything)
+app.set("trust proxy", 1);
+
 // ---------- CORS ----------
 const allowedOrigins = [
   process.env.FRONTEND_URL,
