@@ -1,5 +1,6 @@
 // Import necessary modules and middleware
 const express = require("express");
+const cors = require("cors");
 
 const contactRoutes = require("./modules/contact");
 const errorHandler = require("./middleware/errorHandler.js");
@@ -8,7 +9,33 @@ const afterRequestHandler = require("./middleware/afterRequestHandler.js");
 // Create an Express application
 const app = express();
 
-// middleware
+// ---------- CORS ----------
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:8080",
+  "http://localhost:4000",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // Postman/curl
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("CORS not allowed"), false);
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  }),
+);
+
+// ---------- CORS ----------
+
+// Middleware
 
 // Below is built-in Express middleware to parse JSON bodies.
 // It should be used before defining routes that need to access req.body.
@@ -25,7 +52,7 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-// 404
+// 404 handler - should be defined after all other routes
 app.use((req, res) => {
   res.status(404).json({ error: "Not found" });
 });
