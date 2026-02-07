@@ -7,6 +7,7 @@ exports.contact = async (req, res, next) => {
     const { name, email, message } = req.body;
     await Message.create({ name, email, message });
     await sendContactEmail({ name, email, message });
+    console.log("Message sent");
 
     return res.status(201).json({
       success: true,
