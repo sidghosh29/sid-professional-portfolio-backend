@@ -1,8 +1,10 @@
 // Import necessary modules and middleware
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const contactRoutes = require("./modules/contact");
+const clientRoutes = require("./modules/clients");
 const errorHandler = require("./middleware/errorHandler.js");
 const afterRequestHandler = require("./middleware/afterRequestHandler.js");
 
@@ -48,8 +50,9 @@ app.use(express.json());
 app.use(afterRequestHandler);
 
 // routes
+app.use("/public", express.static(path.join(__dirname, "public")));
 app.use("/api/contact", contactRoutes);
-
+app.use("/api/clients", clientRoutes);
 // health check
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
