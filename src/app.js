@@ -12,14 +12,24 @@ const afterRequestHandler = require("./middleware/afterRequestHandler.js");
 // Create an Express application
 const app = express();
 
-// MUST be here (before cors, rateLimit, routes, everything)
+// Below line of code MUST be here (before cors, rateLimit, routes, everything)
+// This tells Express to trust the first proxy in front of it, which is necessary for correct handling of secure cookies and client IP addresses when the app is behind a proxy (like a load balancer).
+// The proxy inserts headers like X-Forwarded-For (original client IP),
+// X-Forwarded-Proto (original protocol HTTP/HTTPS),
+// and X-Forwarded-Host (original host)
 app.set("trust proxy", 1);
+
+// Only set the above when you actually have a trusted proxy in front;
+// otherwise a client could spoof X-Forwarded-* headers.
+// If you have more than one proxy hop, you’d adjust this
+// (or use a more specific trust proxy configuration).
 
 // ---------- CORS ----------
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:8080",
   "http://localhost:4000",
+  "http://127.0.0.1:5500",
 ];
 
 app.use(
