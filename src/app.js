@@ -6,6 +6,7 @@ const path = require("path");
 const contactRoutes = require("./modules/contact");
 const clientRoutes = require("./modules/clients");
 const adminRoutes = require("./modules/admin");
+const analyticsRoutes = require("./modules/analytics");
 const errorHandler = require("./middleware/errorHandler.js");
 const afterRequestHandler = require("./middleware/afterRequestHandler.js");
 
@@ -65,6 +66,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 app.use("/api/contact", contactRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/analytics", analyticsRoutes);
 // health check
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
