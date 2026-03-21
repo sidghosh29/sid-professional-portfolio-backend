@@ -9,6 +9,14 @@ exports.contact = async (req, res, next) => {
     await sendContactEmail({ name, email, message });
     console.log("Message sent");
 
+    const io = req.app.get("io");
+
+    io.emit("new-message", {
+      name,
+      email,
+      message,
+    });
+
     return res.status(201).json({
       success: true,
       message: "Message received",
