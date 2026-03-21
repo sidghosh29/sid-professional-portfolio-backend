@@ -9,7 +9,7 @@ const adminRoutes = require("./modules/admin");
 const analyticsRoutes = require("./modules/analytics");
 const errorHandler = require("./middleware/errorHandler.js");
 const afterRequestHandler = require("./middleware/afterRequestHandler.js");
-
+const rateLimit = require("./middleware/rateLimit.js");
 // Create an Express application
 const app = express();
 
@@ -66,7 +66,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 app.use("/api/contact", contactRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/analytics", analyticsRoutes);
+app.use("/api/analytics", rateLimit, analyticsRoutes);
 // health check
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
