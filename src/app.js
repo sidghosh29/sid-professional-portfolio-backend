@@ -14,7 +14,9 @@ const rateLimit = require("./middleware/rateLimit.js");
 const app = express();
 
 // Below line of code MUST be here (before cors, rateLimit, routes, everything)
-// This tells Express to trust the first proxy in front of it, which is necessary for correct handling of secure cookies and client IP addresses when the app is behind a proxy (like a load balancer).
+// This tells Express to trust the first proxy in front of it, which is necessary for
+// correct handling of secure cookies and client IP addresses when the app is behind a
+// proxy (like a load balancer).
 // The proxy inserts headers like X-Forwarded-For (original client IP),
 // X-Forwarded-Proto (original protocol HTTP/HTTPS),
 // and X-Forwarded-Host (original host)
@@ -36,7 +38,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // Postman/curl typically don’t send Origin header.
+      if (!origin) return callback(null, true); // Postman/curl typically don't send Origin header.
 
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
@@ -47,6 +49,12 @@ app.use(
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
+    // 'credentials: true' will send header Access-Control-Allow-Credentials: true
+    // in the response, which tells the browser that the server allows credentials
+    // (cookies, authorization headers) to be included in cross-origin requests.
+    // Make sure to set this to true if your frontend needs to send cookies
+    // (e.g., for authentication) and ensure that the frontend also sets
+    // withCredentials: true in its requests.
   }),
 );
 
@@ -58,7 +66,8 @@ app.use(
 // It should be used before defining routes that need to access req.body.
 app.use(express.json());
 
-// Global middleware that when executes, listens for the 'finish' event on the response object to perform actions after the response has been sent.
+// Global middleware that when executes, listens for the 'finish' event on the response object
+// to perform actions after the response has been sent.
 app.use(afterRequestHandler);
 
 // routes
